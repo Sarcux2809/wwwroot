@@ -1,3 +1,6 @@
+<?
+session_start(); // Agregar al inicio de la clase o método
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
