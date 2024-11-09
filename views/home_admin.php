@@ -108,7 +108,7 @@ if (isset($_POST['asignar_rol'])) {
                         <td><?php echo $usuario['id']; ?></td>
                         <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
                         <td><?php echo htmlspecialchars($usuario['email']); ?></td>
-                        <td><?php echo htmlspecialchars($usuario['rol'] ?? 'No asignado'); ?></td>
+                        <td><?php echo htmlspecialchars($usuario['rol_id'] ?? 'No asignado'); ?></td>
                         <td>
                             <form action="" method="POST">
                                 <input type="hidden" name="usuario_id" value="<?php echo $usuario['id']; ?>">
