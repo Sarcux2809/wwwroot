@@ -3,31 +3,57 @@ require_once __DIR__ . '/../config/database.php';
 
 class Document {
     private $conn;
-    private $table_name = "documentos";
 
-    public function __construct() {
-        $database = new Database();
-        $this->conn = $database->getConnection();
+    public function __construct($db) {
+        $this->conn = $db;
     }
 
+    // Obtener todos los documentos con permisos
+    public function getDocuments($user_id, $role) {
+        if ($role == 'Administrador') {
+            $sql = "SELECT * FROM documentos";
+        } elseif ($role == 'Editor') {
+            $sql = "SELECT * FROM documentos WHERE subido_por = :user_id";
+        } else { // Usuario Regular
+            $sql = "SELECT * FROM documentos WHERE permiso_id = (SELECT id FROM permisos WHERE nombre = 'Lectura')";
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        if ($role == 'Editor') {
+            $stmt->bindValue(':user_id', $user_id);
+        }
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Obtener el ID del permiso basado en el nombre
+    public function getPermisoId($nombre_permiso) {
+        $sql = "SELECT id FROM permisos WHERE nombre = :nombre_permiso";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':nombre_permiso', $nombre_permiso);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['id'] : null;
+    }
+
+    // Subir un archivo
     public function uploadDocument($nombre, $ruta, $subido_por, $permiso_id) {
-        $query = "INSERT INTO " . $this->table_name . " (nombre, ruta, subido_por, permiso_id) VALUES (?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $nombre);
-        $stmt->bindParam(2, $ruta);
-        $stmt->bindParam(3, $subido_por);
-        $stmt->bindParam(4, $permiso_id);
+        $sql = "INSERT INTO documentos (nombre, ruta, subido_por, permiso_id) VALUES (:nombre, :ruta, :subido_por, :permiso_id)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':nombre', $nombre);
+        $stmt->bindValue(':ruta', $ruta);
+        $stmt->bindValue(':subido_por', $subido_por);
+        $stmt->bindValue(':permiso_id', $permiso_id);
         return $stmt->execute();
     }
 
-    public function getDocumentsByPermission($user_id, $role) {
-        if ($role === 'Administrador') {
-            $query = "SELECT * FROM " . $this->table_name;
-        } else {
-            $query = "SELECT * FROM " . $this->table_name . " WHERE permiso_id = 1"; // Solo archivos de lectura
-        }
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Eliminar un archivo
+    public function deleteDocument($document_id) {
+        $sql = "DELETE FROM documentos WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':id', $document_id);
+        return $stmt->execute();
     }
 }
