@@ -56,4 +56,13 @@ class Document {
         $stmt->bindValue(':id', $document_id);
         return $stmt->execute();
     }
+
+    // Obtener un documento específico por su ID
+    public function getDocumentById($document_id) {
+        $sql = "SELECT * FROM documentos WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':id', $document_id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

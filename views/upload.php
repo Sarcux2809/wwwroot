@@ -27,17 +27,36 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
         exit();
     }
 
+    // Validar la extensión del archivo
+    $allowedExtensions = ['pdf', 'txt', 'docx'];
+    $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+    if (!in_array(strtolower($fileExtension), $allowedExtensions)) {
+        echo "Error: Solo se permiten archivos con las extensiones: .pdf, .txt y .docx.";
+        exit();
+    }
+
+    // Validar tamaño máximo de archivo (por ejemplo, 10 MB)
+    $maxFileSize = 10 * 1024 * 1024; // 10 MB
+    if ($_FILES['file']['size'] > $maxFileSize) {
+        echo "Error: El archivo es demasiado grande. El tamaño máximo permitido es 10 MB.";
+        exit();
+    }
+
+    // Limpiar el nombre del archivo para evitar caracteres problemáticos
+    $fileNameClean = preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $fileName); // Reemplaza caracteres no seguros por "_"
+
     // Definir la ruta donde se almacenarán los archivos
     $uploadDir = __DIR__ . '/../public/uploads/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true); // Crear el directorio si no existe
     }
-    $filePath = $uploadDir . basename($fileName);
+    $filePath = $uploadDir . basename($fileNameClean);
 
     // Mover el archivo a la carpeta de uploads
     if (move_uploaded_file($fileTmpPath, $filePath)) {
         // Subir el archivo usando el modelo Document
-        $uploadSuccess = $documentModel->uploadDocument($fileName, $filePath, $_SESSION['user_id'], $permiso_id);
+        $uploadSuccess = $documentModel->uploadDocument($fileNameClean, $filePath, $_SESSION['user_id'], $permiso_id);
 
         if ($uploadSuccess) {
             header("Location: home_admin.php?message=Archivo subido exitosamente");
@@ -51,3 +70,4 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
 } else {
     echo "Error: No se envió ningún archivo o hubo un error en la carga.";
 }
+?>

@@ -1,5 +1,5 @@
 <?php
-require_once 'config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 class User {
     private $conn;
@@ -42,4 +42,41 @@ class User {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC)['nombre'];
     }
+
+    // Método para obtener usuarios
+    public function getUsers() {
+        $query = "SELECT * FROM usuarios"; // Ajusta según tu esquema
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Método para obtener roles
+    public function getRoles() {
+        $query = "SELECT * FROM roles"; // Ajusta según tu esquema
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Método para asignar rol a un usuario
+    public function asignarRol($usuario_id, $rol_id) {
+        // Actualizar el rol del usuario en la base de datos
+        $query = "UPDATE usuarios SET rol_id = :rol_id WHERE id = :usuario_id";
+
+        // Preparar la consulta
+        $stmt = $this->conn->prepare($query);
+
+        // Vincular parámetros
+        $stmt->bindParam(':rol_id', $rol_id);
+        $stmt->bindParam(':usuario_id', $usuario_id);
+
+        // Ejecutar la consulta y devolver el resultado
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
+?>
