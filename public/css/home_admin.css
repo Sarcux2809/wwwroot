@@ -1,0 +1,106 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+/* Estilo para los formularios */
+form {
+    margin: 20px;
+}
+
+input[type="file"],
+select,
+button {
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Mensajes */
+.message {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Tabla de gestión de usuarios */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+td {
+    background-color: #ffffff;
+}
+
+td form {
+    margin: 0;
+}
+
+/* Estilos para la sección de gestión de documentos */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 10px;
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+ul li a {
+    margin-right: 10px;
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+ul li a:hover {
+    text-decoration: underline;
+}
