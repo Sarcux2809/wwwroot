@@ -1,34 +1,43 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 
-class Document {
+class Document
+{
     private $conn;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
     // Obtener todos los documentos con permisos
     public function getDocuments($user_id, $role) {
         if ($role == 'Administrador') {
+            // Si es administrador, puede ver todos los documentos
             $sql = "SELECT * FROM documentos";
         } elseif ($role == 'Editor') {
+            // Si es editor, solo puede ver los documentos que él subió
             $sql = "SELECT * FROM documentos WHERE subido_por = :user_id";
         } else { // Usuario Regular
-            $sql = "SELECT * FROM documentos WHERE permiso_id = (SELECT id FROM permisos WHERE nombre = 'Lectura')";
+            // Si es usuario regular, solo puede ver documentos con permiso de lectura
+            $sql = "SELECT * FROM documentos 
+                    WHERE permiso_id = (SELECT id FROM permisos WHERE nombre = 'Lectura')";
         }
-
+    
         $stmt = $this->conn->prepare($sql);
         if ($role == 'Editor') {
             $stmt->bindValue(':user_id', $user_id);
         }
         $stmt->execute();
-
+    
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+
 
     // Obtener el ID del permiso basado en el nombre
-    public function getPermisoId($nombre_permiso) {
+    public function getPermisoId($nombre_permiso)
+    {
         $sql = "SELECT id FROM permisos WHERE nombre = :nombre_permiso";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':nombre_permiso', $nombre_permiso);
@@ -39,7 +48,8 @@ class Document {
     }
 
     // Subir un archivo
-    public function uploadDocument($nombre, $ruta, $subido_por, $permiso_id) {
+    public function uploadDocument($nombre, $ruta, $subido_por, $permiso_id)
+    {
         $sql = "INSERT INTO documentos (nombre, ruta, subido_por, permiso_id) VALUES (:nombre, :ruta, :subido_por, :permiso_id)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':nombre', $nombre);
@@ -50,7 +60,8 @@ class Document {
     }
 
     // Eliminar un archivo
-    public function deleteDocument($document_id) {
+    public function deleteDocument($document_id)
+    {
         $sql = "DELETE FROM documentos WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':id', $document_id);
@@ -58,7 +69,8 @@ class Document {
     }
 
     // Obtener un documento específico por su ID
-    public function getDocumentById($document_id) {
+    public function getDocumentById($document_id)
+    {
         $sql = "SELECT * FROM documentos WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':id', $document_id);

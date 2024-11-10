@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Administrador') 
     exit();
 }
 
+
 // Verificar que el archivo fue enviado y que no hay errores
 if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
     // Obtener datos del archivo y el permiso seleccionado

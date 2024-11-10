@@ -1,0 +1,83 @@
+/* Resetear márgenes y padding predeterminados */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Definir un fondo y un color de texto base */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    padding: 20px;
+}
+
+/* Contenedor principal */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Encabezado */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 2em;
+    color: #2C3E50;
+}
+
+header p {
+    color: #7F8C8D;
+    font-size: 1.2em;
+}
+
+/* Sección de lista de documentos */
+.document-list h2 {
+    font-size: 1.8em;
+    color: #2980B9;
+    margin-bottom: 10px;
+}
+
+.document-list p {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+/* Estilo para la lista de documentos */
+ul {
+    list-style: none;
+}
+
+ul li {
+    margin: 10px 0;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #2980B9;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background-color: #ECF0F1;
+    transition: background-color 0.3s ease;
+}
+
+ul li a:hover {
+    background-color: #BDC3C7;
+}
+
+/* Pie de página */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.9em;
+    color: #7F8C8D;
+}
