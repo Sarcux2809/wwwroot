@@ -73,7 +73,7 @@ if (isset($_POST['asignar_rol'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios y Documentos - Administrador</title>
     <link rel="stylesheet" href="/public/css/home_admin.css?v=<?php echo time(); ?>">
-    </head>
+</head>
 
 <body>
     <header>
@@ -138,12 +138,13 @@ if (isset($_POST['asignar_rol'])) {
                                     <button type="submit" name="asignar_rol">Asignar Rol</button>
                                 </form>
                             </td>
+                            <!-- Parte de la tabla donde se gestionan los permisos -->
                             <td>
                                 <form action="modify_permissions.php" method="POST">
                                     <input type="hidden" name="usuario_id" value="<?php echo $usuario['id']; ?>">
                                     <select name="permissions[]" multiple>
                                         <?php
-                                        $permissions = $userModel->getPermissions();
+                                        $permissions = $userModel->getPermissions(); // Obtener todos los permisos disponibles
                                         foreach ($permissions as $permiso):
                                         ?>
                                             <option value="<?php echo $permiso['id']; ?>"
@@ -155,6 +156,7 @@ if (isset($_POST['asignar_rol'])) {
                                     <button type="submit" name="modificar_permisos">Modificar Permisos</button>
                                 </form>
                             </td>
+
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

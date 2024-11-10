@@ -66,21 +66,47 @@ class User
         return $stmt->execute();
     }
 
-    // Obtener permisos de un usuario
     // Obtener permisos de un usuario basado en su rol
-public function getUserPermissions($usuario_id)
-{
-    $query = "SELECT p.nombre 
+    public function getUserPermissions($usuario_id)
+    {
+        $query = "SELECT p.id, p.nombre 
               FROM permisos p
-              JOIN role_permissions rp ON rp.permission_id = p.id
-              JOIN roles r ON rp.role_id = r.id
-              JOIN usuarios u ON u.rol_id = r.id
-              WHERE u.id = ?";
+              JOIN user_permissions up ON up.permission_id = p.id
+              WHERE up.user_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $usuario_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    // Modificar permisos de un usuario (con opción de agregar todos los permisos)
+public function modificarPermisos($usuario_id, $permisos_ids, $asignar_todos = false)
+{
+    // Si se debe asignar todos los permisos, obtén todos los permisos disponibles
+    if ($asignar_todos) {
+        $query = "SELECT id FROM permisos";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $permisos_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    // Primero, eliminamos los permisos existentes del usuario
+    $query = "DELETE FROM user_permissions WHERE user_id = ?";
     $stmt = $this->conn->prepare($query);
     $stmt->bindParam(1, $usuario_id);
     $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Ahora, asignamos los nuevos permisos seleccionados
+    foreach ($permisos_ids as $permiso_id) {
+        $query = "INSERT INTO user_permissions (user_id, permission_id) VALUES (?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $usuario_id);
+        $stmt->bindParam(2, $permiso_id);
+        $stmt->execute();
+    }
+
+    return true;
 }
 
 }
-?>
