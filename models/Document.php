@@ -11,28 +11,41 @@ class Document
     }
 
     // Obtener todos los documentos con permisos
-    public function getDocuments($user_id, $role) {
+    public function getDocuments($user_id, $role)
+    {
         if ($role == 'Administrador') {
             // Si es administrador, puede ver todos los documentos
-            $sql = "SELECT * FROM documentos";
+            $sql = "SELECT d.*, p.nombre AS permiso FROM documentos d
+                LEFT JOIN permisos p ON d.permiso_id = p.id";
         } elseif ($role == 'Editor') {
-            // Si es editor, solo puede ver los documentos que él subió
-            $sql = "SELECT * FROM documentos WHERE subido_por = :user_id";
+            // Si es editor, puede ver los documentos que subió o aquellos con permiso de 'Escritura'
+            $sql = "
+    SELECT d.*, p.nombre AS permiso 
+    FROM documentos d
+    LEFT JOIN permisos p ON d.permiso_id = p.id
+    LEFT JOIN role_permissions rp ON rp.permission_id = p.id
+    WHERE d.subido_por = :user_id OR (rp.role_id = (SELECT rol_id FROM usuarios WHERE id = :user_id) AND p.nombre = 'Escritura')
+";
         } else { // Usuario Regular
             // Si es usuario regular, solo puede ver documentos con permiso de lectura
-            $sql = "SELECT * FROM documentos 
-                    WHERE permiso_id = (SELECT id FROM permisos WHERE nombre = 'Lectura')";
+            $sql = "SELECT d.*, p.nombre AS permiso FROM documentos d
+                LEFT JOIN permisos p ON d.permiso_id = p.id
+                WHERE p.nombre = 'Lectura'";
         }
-    
+
         $stmt = $this->conn->prepare($sql);
+
         if ($role == 'Editor') {
             $stmt->bindValue(':user_id', $user_id);
         }
+
         $stmt->execute();
-    
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
+
+
+
 
 
     // Obtener el ID del permiso basado en el nombre
