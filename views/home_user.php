@@ -1,5 +1,17 @@
 <?php
 session_start();
+
+// Si el usuario hace clic en el botón de cerrar sesión
+if (isset($_POST['logout'])) {
+    // Destruir la sesión
+    session_unset();  // Eliminar todas las variables de sesión
+    session_destroy();  // Destruir la sesión
+
+    // Redirigir al login
+    header("Location: login.php");
+    exit();
+}
+
 require_once __DIR__ . '/../config/database.php';  // Incluir la clase Database
 
 if (!isset($_SESSION['user_id'])) {
@@ -37,6 +49,11 @@ $documents = $documentModel->getDocuments($user_id, $role);
             <h1>Bienvenido, Usuario Regular</h1>
             <p>Contenido exclusivo para usuarios regulares</p>
         </header>
+
+        <!-- Formulario para cerrar sesión -->
+        <form action="" method="POST">
+            <button type="submit" name="logout" class="logout-btn">Cerrar sesión</button>
+        </form>
 
         <section class="document-list">
             <h2>Documentos Disponibles</h2>
