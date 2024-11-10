@@ -65,7 +65,6 @@ if (isset($_POST['asignar_rol'])) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -98,7 +97,8 @@ if (isset($_POST['asignar_rol'])) {
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Email</th>
-                    <th>Rol</th>
+                    <th>Permisos</th> <!-- Nueva columna para los permisos -->
+                    <th>Rol</th> <!-- Columna de Rol movida -->
                     <th>Asignar Rol</th>
                 </tr>
             </thead>
@@ -108,6 +108,20 @@ if (isset($_POST['asignar_rol'])) {
                         <td><?php echo $usuario['id']; ?></td>
                         <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
                         <td><?php echo htmlspecialchars($usuario['email']); ?></td>
+                        <td>
+                            <!-- Mostrar los permisos asignados al usuario -->
+                            <?php
+                            // Obtener los permisos del usuario basado en su ID
+                            $permisos = $userModel->getUserPermissions($usuario['rol_id']); 
+                            if (!empty($permisos)) {
+                                foreach ($permisos as $permiso) {
+                                    echo htmlspecialchars($permiso['nombre']) . "<br>";
+                                }
+                            } else {
+                                echo "No hay permisos asignados.";
+                            }
+                            ?>
+                        </td>
                         <td><?php echo htmlspecialchars($usuario['rol_id'] ?? 'No asignado'); ?></td>
                         <td>
                             <form action="" method="POST">
