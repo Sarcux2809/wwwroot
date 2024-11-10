@@ -3,11 +3,11 @@ session_start();
 require_once __DIR__ . '/../models/Document.php';
 require_once __DIR__ . '/../config/database.php';
 
-// Verificar si el usuario tiene permisos de administrador
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Administrador') {
-    header("Location: login.php");
+// Verificar si el usuario está autenticado y tiene el rol adecuado
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Editor', 'Administrador'])) {
+    header("Location: login.php"); // Redirige al login si no tiene los permisos adecuados
     exit();
-}
+    }
 
 // Verificar que el archivo fue enviado y que no hay errores
 if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {

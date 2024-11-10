@@ -6,7 +6,7 @@ session_start(); // Agregar al inicio de la clase o método
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" href="/public/css/styles.css">
+    <link rel="stylesheet" href="/public/css/styles.css?v=<?php echo time(); ?>">
 </head>
 <body>
     <header>

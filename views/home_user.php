@@ -40,31 +40,27 @@ $documents = $documentModel->getDocuments($user_id, $role);
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Usuario Regular</title>
-    <link rel="stylesheet" href="../public/css/home_user.css">
+    <link rel="stylesheet" href="/public/css/home_user.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
     <div class="container">
         <header>
             <h1>Bienvenido, Usuario Regular</h1>
-            <p>Contenido exclusivo para usuarios regulares</p>
+            <p>Acceso exclusivo para usuarios regulares</p>
         </header>
 
-        <!-- Formulario para cerrar sesión -->
         <form action="" method="POST">
             <button type="submit" name="logout" class="logout-btn">Cerrar sesión</button>
         </form>
 
         <section class="document-list">
             <h2>Documentos Disponibles</h2>
-            <p>A continuación, puedes ver los archivos a los cuales tienes acceso:</p>
-
-            <!-- Lista de archivos disponibles -->
+            <p>Archivos a los cuales tienes acceso:</p>
             <ul>
                 <?php if (!empty($documents)): ?>
                     <?php foreach ($documents as $document): ?>
                         <li>
-                            <!-- Enlace para descargar el documento usando download.php -->
                             <a href="download.php?id=<?php echo urlencode($document['id']); ?>">
                                 Descargar <?php echo htmlspecialchars($document['nombre']); ?>
                             </a>

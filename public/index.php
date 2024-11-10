@@ -24,19 +24,26 @@ if (isset($_SESSION['user_role'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio - Gestión de Documentos</title>
-    <link rel="stylesheet" href="/public/css/styles.css">
+    <link rel="stylesheet" href="/public/css/styles.css?v=<?php echo time(); ?>">
 </head>
 <body>
     <header>
-        <h1>Bienvenido a la Gestión de Documentos</h1>
-    </header>
-    <div class="container">
+        <h1>Gestión de Documentos</h1>
         <?php if (isset($_SESSION['user_role'])): ?>
             <p>Bienvenido, <?= htmlspecialchars($_SESSION['username']) ?>.</p>
-            <p><a href="/logout.php">Cerrar sesión</a></p>
+        <?php endif; ?>
+    </header>
+    
+    <div class="container">
+        <?php if (isset($_SESSION['user_role'])): ?>
+            <p><a href="/logout.php" class="logout-link">Cerrar sesión</a></p>
         <?php else: ?>
-            <p><a href="/views/login.php">Iniciar sesión</a> para acceder al sistema.</p>
+            <p><a href="/views/login.php" class="login-link">Iniciar sesión</a> para acceder al sistema.</p>
         <?php endif; ?>
     </div>
+    
+    <footer>
+        <p>&copy; 2024 Sistema de Gestión de Archivos</p>
+    </footer>
 </body>
 </html>
