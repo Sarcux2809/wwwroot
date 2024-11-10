@@ -6,25 +6,25 @@ require_once __DIR__ . '/../models/Document.php';
 
 // Crear una instancia del modelo Database
 $db = new Database();
-
-// Crear una instancia del modelo User con la conexión de la base de datos
 $userModel = new User($db->getConnection());
+
+// Verificar si el usuario tiene permisos de administrador
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Administrador') {
+    header("Location: login.php");
+    exit();
+}
+
+// Acceder al rol de usuario correctamente
+echo "El rol del usuario es: " . $_SESSION['user_role'];
+
+// Asegurarse de que 'user_name' esté definida en la sesión
+$user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Usuario no identificado';
 
 // Obtener los usuarios
 $usuarios = $userModel->getUsers();
 
 // Obtener los roles
-$roleModel = new User($db->getConnection());
-$roles = $roleModel->getRoles();
-
-// Verificar si el usuario tiene permisos de administrador
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Administrador') {
-    header("Location: login.php");
-    exit();
-}
-
-// Asegurarse de que 'user_name' esté definida en la sesión
-$user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Usuario no identificado';
+$roles = $userModel->getRoles();
 
 // Crear una instancia del modelo Document
 $documentModel = new Document($db->getConnection());
@@ -67,12 +67,14 @@ if (isset($_POST['asignar_rol'])) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios y Documentos - Administrador</title>
-    <link rel="stylesheet" href="/public/css/home_admin.css">
-</head>
+    <link rel="stylesheet" href="/public/css/home_admin.css?v=<?php echo time(); ?>">
+    </head>
+
 <body>
     <header>
         <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['username'] ?? 'Usuario no identificado'); ?>!</h1>
@@ -83,92 +85,111 @@ if (isset($_POST['asignar_rol'])) {
 
     <!-- Mostrar mensajes -->
     <?php if (isset($delete_message)): ?>
-        <p class="message success"><?php echo $delete_message; ?></p>
+        <div class="message success"><?php echo $delete_message; ?></div>
     <?php endif; ?>
     <?php if (isset($role_message)): ?>
-        <p class="message success"><?php echo $role_message; ?></p>
+        <div class="message success"><?php echo $role_message; ?></div>
     <?php endif; ?>
 
-    <section class="user-management">
-        <h2>Gestionar Usuarios</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Permisos</th> <!-- Nueva columna para los permisos -->
-                    <th>Rol</th> <!-- Columna de Rol movida -->
-                    <th>Asignar Rol</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($usuarios as $usuario): ?>
+    <main>
+        <section class="user-management">
+            <h2>Gestionar Usuarios</h2>
+            <table>
+                <thead>
                     <tr>
-                        <td><?php echo $usuario['id']; ?></td>
-                        <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($usuario['email']); ?></td>
-                        <td>
-                            <!-- Mostrar los permisos asignados al usuario -->
-                            <?php
-                            // Obtener los permisos del usuario basado en su ID
-                            $permisos = $userModel->getUserPermissions($usuario['rol_id']); 
-                            if (!empty($permisos)) {
-                                foreach ($permisos as $permiso) {
-                                    echo htmlspecialchars($permiso['nombre']) . "<br>";
-                                }
-                            } else {
-                                echo "No hay permisos asignados.";
-                            }
-                            ?>
-                        </td>
-                        <td><?php echo htmlspecialchars($usuario['rol_id'] ?? 'No asignado'); ?></td>
-                        <td>
-                            <form action="" method="POST">
-                                <input type="hidden" name="usuario_id" value="<?php echo $usuario['id']; ?>">
-                                <select name="rol_id">
-                                    <?php foreach ($roles as $rol): ?>
-                                        <option value="<?php echo $rol['id']; ?>"><?php echo $rol['nombre']; ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <button type="submit" name="asignar_rol">Asignar Rol</button>
-                            </form>
-                        </td>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Permisos</th>
+                        <th>Rol</th>
+                        <th>Asignar Rol</th>
+                        <th>Modificar Permisos</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </section>
+                </thead>
+                <tbody>
+                    <?php foreach ($usuarios as $usuario): ?>
+                        <tr>
+                            <td><?php echo $usuario['id']; ?></td>
+                            <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($usuario['email']); ?></td>
+                            <td>
+                                <?php
+                                $permisos = $userModel->getUserPermissions($usuario['id']);
+                                if (!empty($permisos)) {
+                                    foreach ($permisos as $permiso) {
+                                        echo htmlspecialchars($permiso['nombre']) . "<br>";
+                                    }
+                                } else {
+                                    echo "No hay permisos asignados.";
+                                }
+                                ?>
+                            </td>
+                            <td><?php echo htmlspecialchars($usuario['rol_id'] ?? 'No asignado'); ?></td>
+                            <td>
+                                <form action="" method="POST">
+                                    <input type="hidden" name="usuario_id" value="<?php echo $usuario['id']; ?>">
+                                    <select name="rol_id">
+                                        <?php foreach ($roles as $rol): ?>
+                                            <option value="<?php echo $rol['id']; ?>" <?php echo ($rol['id'] == $usuario['rol_id']) ? 'selected' : ''; ?>>
+                                                <?php echo $rol['nombre']; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <button type="submit" name="asignar_rol">Asignar Rol</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="modify_permissions.php" method="POST">
+                                    <input type="hidden" name="usuario_id" value="<?php echo $usuario['id']; ?>">
+                                    <select name="permissions[]" multiple>
+                                        <?php
+                                        $permissions = $userModel->getPermissions();
+                                        foreach ($permissions as $permiso):
+                                        ?>
+                                            <option value="<?php echo $permiso['id']; ?>"
+                                                <?php echo in_array($permiso['id'], array_column($permisos, 'id')) ? 'selected' : ''; ?>>
+                                                <?php echo $permiso['nombre']; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <button type="submit" name="modificar_permisos">Modificar Permisos</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </section>
 
-    <section class="document-management">
-        <h2>Gestionar Archivos</h2>
-        <form action="upload.php" method="POST" enctype="multipart/form-data">
-            <label for="file">Subir Archivo:</label>
-            <input type="file" id="file" name="file" required>
-            <label for="permiso">Permiso:</label>
-            <select name="permiso" id="permiso">
-                <option value="Lectura">Lectura</option>
-                <option value="Escritura">Escritura</option>
-            </select>
-            <button type="submit">Subir</button>
-        </form>
+        <section class="document-management">
+            <h2>Gestionar Archivos</h2>
+            <form action="upload.php" method="POST" enctype="multipart/form-data">
+                <input type="file" id="file" name="file" required>
+                <select name="permiso" id="permiso">
+                    <option value="Lectura">Lectura</option>
+                    <option value="Escritura">Escritura</option>
+                </select>
+                <button type="submit">Subir Archivo</button>
+            </form>
 
-        <h3>Archivos Subidos</h3>
-        <ul>
-            <?php if (!empty($documents)): ?>
-                <?php foreach ($documents as $document): ?>
-                    <li>
-                        <strong><?php echo htmlspecialchars($document['nombre']); ?></strong><br>
-                        <a href="view.php?id=<?php echo urlencode($document['id']); ?>" target="_blank">Ver</a> |
-                        <a href="download.php?id=<?php echo urlencode($document['id']); ?>">Descargar</a> |
-                        <a href="?delete_id=<?php echo urlencode($document['id']); ?>" onclick="return confirm('¿Estás seguro de eliminar este archivo?')">Eliminar</a> |
-                        <a href="edit.php?id=<?php echo urlencode($document['id']); ?>">Editar</a>
-                    </li>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <li>No hay documentos subidos.</li>
-            <?php endif; ?>
-        </ul>
-    </section>
+            <h3>Archivos Subidos</h3>
+            <ul>
+                <?php if (!empty($documents)): ?>
+                    <?php foreach ($documents as $document): ?>
+                        <li>
+                            <strong><?php echo htmlspecialchars($document['nombre']); ?></strong><br>
+                            <a href="view.php?id=<?php echo urlencode($document['id']); ?>" target="_blank">Ver</a> |
+                            <a href="download.php?id=<?php echo urlencode($document['id']); ?>">Descargar</a> |
+                            <a href="?delete_id=<?php echo urlencode($document['id']); ?>" onclick="return confirm('¿Estás seguro de eliminar este archivo?')">Eliminar</a> |
+                            <a href="edit.php?id=<?php echo urlencode($document['id']); ?>">Editar</a>
+                        </li>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <li>No hay documentos subidos.</li>
+                <?php endif; ?>
+            </ul>
+        </section>
+    </main>
 </body>
+
 </html>

@@ -1,106 +1,211 @@
 /* Estilos generales */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+    background-color: #f1f5f8;
+    color: #333;
+    line-height: 1.6;
 }
 
+/* Contenedor principal */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
 header {
-    background-color: #4CAF50;
+    background-color: #00796b; /* Verde profesional */
     color: white;
     padding: 15px;
     text-align: center;
-}
-
-header h1 {
-    margin: 0;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    font-size: 24px;
+    border-bottom: 5px solid #004d40;
 }
 
 /* Estilo para los formularios */
 form {
-    margin: 20px;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 20px auto;
 }
 
 input[type="file"],
 select,
 button {
     margin: 10px 0;
-    padding: 10px;
+    padding: 12px 15px;
     font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+input[type="file"]:focus,
+select:focus,
+button:focus {
+    border-color: #00796b;
+    outline: none;
+    background-color: #e8f5e9;
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: #00796b;
     color: white;
     border: none;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #004d40;
 }
 
 /* Mensajes */
 .message {
-    padding: 10px;
-    margin: 10px;
-    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
     text-align: center;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .message.success {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d0e9c6;
+}
+
+.message.success:hover {
+    transform: scale(1.05);
 }
 
 /* Tabla de gestión de usuarios */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
-}
-
-table, th, td {
-    border: 1px solid #ddd;
+    margin: 30px 0;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 th, td {
-    padding: 10px;
+    padding: 12px;
     text-align: left;
+    border: 1px solid #ddd;
+    font-size: 16px;
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #00796b;
+    color: white;
 }
 
 td {
     background-color: #ffffff;
 }
 
-td form {
-    margin: 0;
+tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
 
-/* Estilos para la sección de gestión de documentos */
-ul {
-    list-style-type: none;
-    padding: 0;
+tr:hover {
+    background-color: #e8f5e9;
+    cursor: pointer;
 }
 
-ul li {
-    padding: 10px;
-    background-color: #ffffff;
-    margin-bottom: 10px;
-    border-radius: 5px;
+/* Secciones */
+.user-management, .document-management {
+    margin: 20px 0;
+    padding: 25px;
+    background-color: white;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    max-width: 1200px;
+    margin: 20px auto;
 }
 
+h2 {
+    color: #333;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #333;
+    font-size: 1.4em;
+    margin-top: 20px;
+}
+
+/* Mejorar la legibilidad de los enlaces en la gestión de documentos */
 ul li a {
     margin-right: 10px;
-    color: #4CAF50;
+    color: #00796b;
     text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
 }
 
 ul li a:hover {
+    color: #004d40;
     text-decoration: underline;
+}
+
+/* Alineación de botones dentro de formularios */
+form button {
+    width: auto;
+    display: inline-block;
+    background-color: #00796b;
+    border-radius: 8px;
+    padding: 12px 20px;
+    color: white;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+form button:hover {
+    background-color: #004d40;
+    transform: scale(1.05);
+}
+
+/* Efectos de transición y sombra */
+input[type="file"]:hover,
+select:hover,
+button:hover {
+    background-color: #e8f5e9;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 1.4em;
+    }
+
+    form, .user-management, .document-management {
+        padding: 15px;
+    }
+
+    input[type="file"],
+    select,
+    button {
+        width: 100%;
+    }
+
+    .user-management, .document-management {
+        margin: 10px 0;
+    }
 }
