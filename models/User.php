@@ -5,10 +5,10 @@ class User {
     private $conn;
     private $table_name = "usuarios";
 
-    public function __construct() {
-        $database = new Database();
-        $this->conn = $database->getConnection();
+    public function __construct($conn = null) {
+        $this->conn = $conn ?? (new Database())->getConnection();
     }
+    
 
     public function login($email, $password) {
         $query = "SELECT * FROM " . $this->table_name . " WHERE email = ? LIMIT 0,1";

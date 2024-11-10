@@ -9,7 +9,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Administrador') 
     exit();
 }
 
-
 // Verificar que el archivo fue enviado y que no hay errores
 if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
     // Obtener datos del archivo y el permiso seleccionado
@@ -17,15 +16,17 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
     $fileName = $_FILES['file']['name'];
     $permiso_nombre = $_POST['permiso'];
 
+    // Depuración: Mostrar el nombre del permiso para verificarlo
+    echo "Nombre del permiso recibido: " . $permiso_nombre . "<br>";
+
     // Instancia de la base de datos y el modelo Document
     $db = new Database();
     $documentModel = new Document($db->getConnection());
 
     // Obtener el ID del permiso
-    $permiso_id = $documentModel->getPermisoId($permiso_nombre);
-    if ($permiso_id === null) {
-        echo "Error: Permiso no válido.";
-        exit();
+    $permiso_id = $documentModel->getPermisoId($permiso_nombre);  // Corregido a $documentModel
+    if (!$permiso_id) {
+        die("Error: permiso '" . $permiso_nombre . "' no válido o no encontrado.");
     }
 
     // Validar la extensión del archivo

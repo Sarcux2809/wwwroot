@@ -14,20 +14,14 @@ class Document
     public function getDocuments($user_id, $role)
     {
         if ($role == 'Administrador') {
-            // Si es administrador, puede ver todos los documentos
             $sql = "SELECT d.*, p.nombre AS permiso FROM documentos d
                 LEFT JOIN permisos p ON d.permiso_id = p.id";
         } elseif ($role == 'Editor') {
-            // Si es editor, puede ver los documentos que subió o aquellos con permiso de 'Escritura'
-            $sql = "
-    SELECT d.*, p.nombre AS permiso 
-    FROM documentos d
-    LEFT JOIN permisos p ON d.permiso_id = p.id
-    LEFT JOIN role_permissions rp ON rp.permission_id = p.id
-    WHERE d.subido_por = :user_id OR (rp.role_id = (SELECT rol_id FROM usuarios WHERE id = :user_id) AND p.nombre = 'Escritura')
-";
+            $sql = "SELECT d.*, p.nombre AS permiso 
+                FROM documentos d
+                LEFT JOIN permisos p ON d.permiso_id = p.id
+                WHERE d.subido_por = :user_id OR p.nombre = 'Escritura'";
         } else { // Usuario Regular
-            // Si es usuario regular, solo puede ver documentos con permiso de lectura
             $sql = "SELECT d.*, p.nombre AS permiso FROM documentos d
                 LEFT JOIN permisos p ON d.permiso_id = p.id
                 WHERE p.nombre = 'Lectura'";
@@ -36,7 +30,7 @@ class Document
         $stmt = $this->conn->prepare($sql);
 
         if ($role == 'Editor') {
-            $stmt->bindValue(':user_id', $user_id);
+            $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         }
 
         $stmt->execute();
@@ -48,17 +42,25 @@ class Document
 
 
 
+
     // Obtener el ID del permiso basado en el nombre
     public function getPermisoId($nombre_permiso)
-    {
-        $sql = "SELECT id FROM permisos WHERE nombre = :nombre_permiso";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':nombre_permiso', $nombre_permiso);
-        $stmt->execute();
+{
+    $sql = "SELECT id FROM permisos WHERE nombre = :nombre_permiso";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bindValue(':nombre_permiso', $nombre_permiso);
+    $stmt->execute();
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? $result['id'] : null;
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($result) {
+        echo "ID del permiso encontrado para '$nombre_permiso': " . $result['id'];
+        return $result['id'];
+    } else {
+        echo "Permiso '$nombre_permiso' no encontrado.";
     }
+    return null;
+}
+
 
     // Subir un archivo
     public function uploadDocument($nombre, $ruta, $subido_por, $permiso_id)
