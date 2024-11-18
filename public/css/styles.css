@@ -31,15 +31,10 @@ header h1 {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Enlaces de sesión */
-.login-link, .logout-link {
-    color: #f1c40f;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.login-link:hover, .logout-link:hover {
-    color: #ffffff;
+/* Mensajes de error */
+.message {
+    color: red;
+    margin-bottom: 15px;
 }
 
 /* Formularios */
@@ -50,23 +45,27 @@ form {
 }
 
 form input[type="text"],
-form input[type="file"],
 form input[type="password"],
-form select {
+form input[type="email"],
+form button {
     padding: 12px;
-    margin: 0;
     background-color: #333842;
     border: 1px solid #555;
     border-radius: 8px;
     color: #eee;
 }
 
+form input[type="text"],
+form input[type="password"],
+form input[type="email"] {
+    background-color: #333842;
+    border: 1px solid #555;
+}
+
 form button {
-    padding: 12px;
     background-color: #f1c40f;
     color: #1b1f24;
     border: none;
-    border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -76,30 +75,24 @@ form button:hover {
     background-color: #e1b80f;
 }
 
-/* Tablas */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table, th, td {
-    border: 1px solid #444;
-    padding: 12px;
-}
-
-th {
-    background-color: #34495e;
+/* Enlaces de sesión */
+a {
     color: #f1c40f;
-    font-weight: bold;
+    text-decoration: none;
 }
 
-tr:nth-child(even) {
-    background-color: #2e333b;
+a:hover {
+    color: #ffffff;
 }
 
-tr:nth-child(odd) {
-    background-color: #262a31;
+/* Estilos de sección */
+#login, #register, #reset_password {
+    display: none;
+}
+
+/* Mostrar las secciones según corresponda */
+#login {
+    display: block;
 }
 
 /* Pie de página */
