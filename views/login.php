@@ -24,12 +24,16 @@ session_start(); // Iniciar sesión para manejar variables de sesión
     </header>
 
     <div class="container">
-        <?php if (isset($_SESSION['register_message'])): ?>
-            <div class="message">
-                <p><?php echo $_SESSION['register_message']; ?></p>
-            </div>
-            <?php unset($_SESSION['register_message']); // Eliminar el mensaje después de mostrarlo ?>
-        <?php endif; ?>
+        <?php
+        if (isset($_SESSION['message'])) {
+            echo "<p class='success'>" . $_SESSION['message'] . "</p>";
+            unset($_SESSION['message']);
+        }
+        if (isset($_SESSION['error'])) {
+            echo "<p class='error'>" . $_SESSION['error'] . "</p>";
+            unset($_SESSION['error']);
+        }
+        ?>
 
         <form action="login_handler.php" method="POST">
             <label for="username">Usuario:</label>

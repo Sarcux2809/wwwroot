@@ -1,6 +1,5 @@
 <?php
-session_start(); // Iniciar sesión para usar variables de sesión
-
+session_start();
 require_once('../config/database.php');
 
 $database = new Database();
@@ -18,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
-        $_SESSION['register_message'] = "Ya existe una cuenta con ese nombre de usuario o correo electrónico.";
+        $_SESSION['error'] = "Ya existe una cuenta con ese nombre de usuario o correo electrónico.";
     } else {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $role_id = 3;
@@ -31,9 +30,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':role_id', $role_id);
 
         if ($stmt->execute()) {
-            $_SESSION['register_message'] = "Registro exitoso. Ahora puedes iniciar sesión.";
+            $_SESSION['message'] = "Registro exitoso. Ahora puedes iniciar sesión.";
         } else {
-            $_SESSION['register_message'] = "Error en el registro. Por favor, inténtalo de nuevo.";
+            $_SESSION['error'] = "Error en el registro. Por favor, inténtalo de nuevo.";
         }
     }
 
