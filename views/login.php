@@ -1,5 +1,5 @@
 <?php
-session_start(); // Iniciar sesión para manejar autenticación
+session_start(); // Iniciar sesión para manejar variables de sesión
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -24,7 +24,13 @@ session_start(); // Iniciar sesión para manejar autenticación
     </header>
 
     <div class="container">
-        <!-- Formulario de login -->
+        <?php if (isset($_SESSION['register_message'])): ?>
+            <div class="message">
+                <p><?php echo $_SESSION['register_message']; ?></p>
+            </div>
+            <?php unset($_SESSION['register_message']); // Eliminar el mensaje después de mostrarlo ?>
+        <?php endif; ?>
+
         <form action="login_handler.php" method="POST">
             <label for="username">Usuario:</label>
             <input type="text" id="username" name="username" required>
@@ -42,7 +48,6 @@ session_start(); // Iniciar sesión para manejar autenticación
             <a href="javascript:void(0)" onclick="toggleSection('register')">¿No tienes cuenta? Regístrate aquí</a>
         </p>
 
-        <!-- Formulario de restablecimiento de contraseña -->
         <div id="reset" class="toggle-section" style="display:none;">
             <h2>Restablecer Contraseña</h2>
             <form action="reset_password.php" method="POST">
@@ -56,7 +61,6 @@ session_start(); // Iniciar sesión para manejar autenticación
             </form>
         </div>
 
-        <!-- Formulario de registro -->
         <div id="register" class="toggle-section" style="display:none;">
             <h2>Registro de Usuario</h2>
             <form action="register_handler.php" method="POST">
